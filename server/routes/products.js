@@ -4,6 +4,9 @@ const cloudinary = require('../config/cloudinary');
 const authMiddleware = require('../middleware/auth');
 const Product = require('../models/Product');
 const router = express.Router();
+const upload = require('../middleware/multer');
+const { uploadBufferToCloudinary } = require('../config/cloudinary');
+
 
 // Configure multer for memory storage
 const storage = multer.memoryStorage();
@@ -33,44 +36,90 @@ router.get('/:id', async (req, res) => {
 });
 
 // Like a product
-router.post('/:id/like', async (req, res) => {
-  try {
-    const { userId } = req.body;
+// router.post('/:id/like', async (req, res) => {
+//   try {
+//     const { userId } = req.body;
     
-    if (!userId) {
-      return res.status(400).json({ message: 'User ID is required' });
-    }
+//     if (!userId) {
+//       return res.status(400).json({ message: 'User ID is required' });
+//     }
 
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
+//     const product = await Product.findById(req.params.id);
+//     if (!product) {
+//       return res.status(404).json({ message: 'Product not found' });
+//     }
 
-    // Check if user already liked this product
-    if (product.likedBy && product.likedBy.includes(userId)) {
-      return res.status(400).json({ 
-        message: 'You have already liked this product',
-        likes: product.likes,
-        alreadyLiked: true
+//     // Check if user already liked this product
+//     if (product.likedBy && product.likedBy.includes(userId)) {
+//       return res.status(400).json({ 
+//         message: 'You have already liked this product',
+//         likes: product.likes,
+//         alreadyLiked: true
+//       });
+//     }
+
+//     // Add like and user ID
+//     product.likes = (product.likes || 0) + 1;
+//     if (!product.likedBy) {
+//       product.likedBy = [];
+//     }
+//     product.likedBy.push(userId);
+//     await product.save();
+
+//     res.json({ 
+//       likes: product.likes,
+//       alreadyLiked: false
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error liking product', error: error.message });
+//   }
+// });
+
+
+
+router.post(
+  '/',
+  authMiddleware,
+  upload.fields([
+    { name: 'images', maxCount: 10 },
+    { name: 'video', maxCount: 1 },
+  ]),
+  async (req, res) => {
+    try {
+      const images = [];
+      if (req.files?.images) {
+        for (const file of req.files.images) {
+          const url = await uploadBufferToCloudinary(file.buffer, "iffu_products");
+          images.push(url);
+        }
+      }
+
+      let videoUrl = null;
+      if (req.files?.video) {
+        videoUrl = await uploadBufferToCloudinary(req.files.video[0].buffer, "iffu_videos");
+      }
+
+      const product = new Product({
+        name: req.body.name,
+        description: req.body.description,
+        shortDescription: req.body.shortDescription,
+        price: req.body.price,
+        images,
+        video: videoUrl,
       });
-    }
 
-    // Add like and user ID
-    product.likes = (product.likes || 0) + 1;
-    if (!product.likedBy) {
-      product.likedBy = [];
-    }
-    product.likedBy.push(userId);
-    await product.save();
+      await product.save();
+      res.json({ message: 'Product created successfully', product });
 
-    res.json({ 
-      likes: product.likes,
-      alreadyLiked: false
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Error liking product', error: error.message });
+    } catch (error) {
+      console.error('UPLOAD ERROR:', error);
+      res.status(500).json({ message: 'Error creating product', error: error.message });
+    }
   }
-});
+);
+
+
+
 
 // Helper function to upload file to Cloudinary
 const uploadToCloudinary = (file) => {

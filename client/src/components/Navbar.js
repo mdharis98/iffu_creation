@@ -15,18 +15,6 @@ const Navbar = () => {
             {/* <FaPen className="text-red-600 text-2xl" /> */}
             <img src="/logo.png" alt="iffu_creation" className="h-10 w-auto" />
           </Link>
-          
-          {/* <div className="flex items-center space-x-4">
-            {isAuthenticated() ? (
-              <Link
-                to="/admin/dashboard"
-                className="flex items-center space-x-2 px-4 py-2 text-white rounded-xl shadow-md hover:shadow-lg bg-button hover:bg-buttonHover transition"
-              >
-                <FaUser />
-                <span>Admin Dashboard</span>
-              </Link>
-            ) : null}
-          </div> */}
         </div>
       </div>
     </nav>

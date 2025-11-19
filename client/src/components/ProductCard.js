@@ -10,7 +10,6 @@ const ProductCard = ({ product, onClick, onUpdate }) => {
   const [alreadyLiked, setAlreadyLiked] = useState(false);
 
   useEffect(() => {
-    // Check if current user has already liked this product
     const userId = getUserId();
     const likedBy = product.likedBy || [];
     setAlreadyLiked(likedBy.includes(userId));
@@ -48,23 +47,6 @@ const ProductCard = ({ product, onClick, onUpdate }) => {
     onClick();
   };
 
-  // const renderStars = (rating) => {
-  //   const fullStars = Math.floor(rating);
-  //   const halfStar = rating % 1 !== 0;
-  //   const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-
-  //   return (
-  //     <div className="flex items-center">
-  //       {[...Array(fullStars)].map((_, i) => (
-  //         <FaStar key={`full-${i}`} className="text-yellow-400" />
-  //       ))}
-  //       {halfStar && <FaStar key="half" className="text-yellow-400" style={{ clipPath: 'inset(0 50% 0 0)' }} />}
-  //       {[...Array(emptyStars)].map((_, i) => (
-  //         <FaStar key={`empty-${i}`} className="text-gray-300" />
-  //       ))}
-  //     </div>
-  //   );
-  // };
 
   return (
     <div
@@ -102,10 +84,6 @@ const ProductCard = ({ product, onClick, onUpdate }) => {
         <div className="flex items-center justify-between mb-3">
           <span className="text-2xl font-bold text-primary">Rs.{product.price}</span>
           <div className="flex items-center space-x-2">
-            {/* <Link to={`/products/${product._id}/feedback`} className="text-sm text-textSecondary flex items-center space-x-1 hover:underline">
-              {renderStars(product.averageRating)}
-              <span className="ml-1">({(product.averageRating || 0).toFixed(1)})</span>
-            </Link> */}
             <span className="text-sm text-textSecondary flex items-center space-x-1">
               <FaHeart className="text-red-500" />
               <span>{likes}</span>

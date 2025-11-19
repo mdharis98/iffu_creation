@@ -98,7 +98,6 @@ const AdminDashboard = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              {/* <FaShoppingBag className="text-blue-600 text-2xl" /> */}
               <span className="text-2xl font-bold text-gray-800"><img src="/logo.png" alt="iffu_creation" className="h-10 w-auto" /></span>
             </div>
             <button
@@ -198,72 +197,6 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
-
-        {/* {activeTab === 'orders' && (
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">All Orders</h2>
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Address</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {orders.map((order) => (
-                    <tr key={order._id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {order._id.slice(-8)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {order.customerName}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
-                        {order.productId?.name || 'N/A'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {order.phoneNumber}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
-                        {order.address}, {order.location}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <span className={`px-2 py-1 rounded-full text-xs ${order.status === 'delivered' ? 'bg-green-100 text-green-700' : order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-700'}`}>
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        {order.status !== 'delivered' ? (
-                          <button
-                            onClick={() => markOrderDelivered(order._id)}
-                            className="px-3 py-1 bg-[#60A5FA] text-white rounded-lg hover:bg-blue-600 transition"
-                          >
-                            Mark as Done
-                          </button>
-                        ) : (
-                          <span className="text-green-600 font-medium">Done</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {orders.length === 0 && (
-                <div className="text-center py-8 text-gray-500">No orders yet</div>
-              )}
-            </div>
-          </div>
-        )} */}
 
 
         {activeTab === 'orders' && (

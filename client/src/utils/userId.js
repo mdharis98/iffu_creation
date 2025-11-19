@@ -1,4 +1,4 @@
-// Generate or retrieve a unique user ID stored in localStorage
+
 export const getUserId = () => {
   let userId = localStorage.getItem('quickmart_userId');
   

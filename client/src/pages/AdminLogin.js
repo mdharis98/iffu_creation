@@ -31,11 +31,6 @@ const AdminLogin = () => {
         </div>
 
         <div className="relative z-10 text-center mb-8">
-          {/* <div className="flex justify-center mb-4">
-            <FaShoppingBag className="text-blue-600 text-5xl" />
-          </div> */}
-          {/* <h1 className="text-3xl font-bold text-gray-800 mb-2">QuickMart</h1> */}
-          {/* <img src="/logo.png" alt="iffu_creation" className="h-10 w-auto text-3xl font-bold text-gray-800 mb-2" /> */}
           <img src="/logo.png" alt="iffu_creation" className="h-15 w-auto text-3xl font-bold text-gray-800 mb-2 mx-auto"/>
 
           <p className="text-gray-800">Admin Login</p>

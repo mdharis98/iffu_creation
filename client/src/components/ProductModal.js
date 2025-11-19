@@ -1,8 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { FaHeart, FaTimes, FaChevronLeft, FaChevronRight, FaShoppingCart, FaStar } from 'react-icons/fa';
-import { likeProduct,getFeedbackForProduct, createFeedback, createOrder } from '../services/api';
-import { getUserId } from '../utils/userId';
-import OrderForm from './OrderForm';
+import React, { useState, useEffect } from "react";
+import {
+  FaHeart,
+  FaTimes,
+  FaChevronLeft,
+  FaChevronRight,
+  FaShoppingCart,
+  FaStar,
+} from "react-icons/fa";
+import {
+  likeProduct,
+  getFeedbackForProduct,
+  createFeedback,
+  createOrder,
+} from "../services/api";
+import { getUserId } from "../utils/userId";
+import OrderForm from "./OrderForm";
 
 const ProductModal = ({ product, isOpen, onClose, onProductUpdate }) => {
   const [likes, setLikes] = useState(product.likes || 0);
@@ -11,8 +23,8 @@ const ProductModal = ({ product, isOpen, onClose, onProductUpdate }) => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [feedbackText, setFeedbackText] = useState('');
-  const [feedbackName, setFeedbackName] = useState('');
+  const [feedbackText, setFeedbackText] = useState("");
+  const [feedbackName, setFeedbackName] = useState("");
   const [submittingFeedback, setSubmittingFeedback] = useState(false);
   const [rating, setRating] = useState(0);
 
@@ -32,42 +44,45 @@ const ProductModal = ({ product, isOpen, onClose, onProductUpdate }) => {
       const response = await getFeedbackForProduct(product._id);
       setFeedbacks(response.data);
     } catch (error) {
-      console.error('Error fetching feedbacks:', error);
+      console.error("Error fetching feedbacks:", error);
     }
   };
 
   const handleLike = async () => {
     if (alreadyLiked) return;
-    
+
     try {
       const userId = getUserId();
       const response = await likeProduct(product._id, userId);
-      
+
       if (response.data.alreadyLiked === false) {
         setLikes(response.data.likes);
         setAlreadyLiked(true);
         onProductUpdate();
       }
     } catch (error) {
-      if (error.response?.status === 400 && error.response?.data?.alreadyLiked) {
+      if (
+        error.response?.status === 400 &&
+        error.response?.data?.alreadyLiked
+      ) {
         setAlreadyLiked(true);
         setLikes(error.response.data.likes);
       } else {
-        console.error('Error liking product:', error);
+        console.error("Error liking product:", error);
       }
     }
   };
 
   const handlePreviousImage = (e) => {
     e.stopPropagation();
-    setCurrentImageIndex((prev) => 
+    setCurrentImageIndex((prev) =>
       prev === 0 ? (product.images?.length || 1) - 1 : prev - 1
     );
   };
 
   const handleNextImage = (e) => {
     e.stopPropagation();
-    setCurrentImageIndex((prev) => 
+    setCurrentImageIndex((prev) =>
       prev === (product.images?.length || 1) - 1 ? 0 : prev + 1
     );
   };
@@ -82,13 +97,13 @@ const ProductModal = ({ product, isOpen, onClose, onProductUpdate }) => {
       setLoading(true);
       await createOrder({
         ...orderData,
-        productId: product._id
+        productId: product._id,
       });
       setShowOrderForm(false);
-      alert('Order placed successfully!');
+      alert("Order placed successfully!");
     } catch (error) {
-      console.error('Error placing order:', error);
-      alert('Failed to place order. Please try again.');
+      console.error("Error placing order:", error);
+      alert("Failed to place order. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -97,54 +112,40 @@ const ProductModal = ({ product, isOpen, onClose, onProductUpdate }) => {
   const handleFeedbackSubmit = async (e) => {
     e.preventDefault();
     if (!feedbackText.trim() || !feedbackName.trim() || rating === 0) {
-      alert('Please fill in all fields');
+      alert("Please fill in all fields");
       return;
     }
 
     try {
       setSubmittingFeedback(true);
-      // await createFeedback({
-      //   productId: product._id,
-      //   customerName: feedbackName,
-      //   text: feedbackText,
-      //   rating
-      // });
-      // setFeedbackText('');
-      // setFeedbackName('');
-      // setRating(0);
-      // // fetchFeedbacks();
-      // alert('Feedback submitted successfully!');
-
-
       const response = await createFeedback({
-  productId: product._id,
-  customerName: feedbackName,
-  text: feedbackText,
-  rating
-});
+        productId: product._id,
+        customerName: feedbackName,
+        text: feedbackText,
+        rating,
+      });
 
-// ✅ Add new feedback instantly in the list
-setFeedbacks((prev) => [
-  ...prev,
-  {
-    _id: response.data._id,
-    customerName: feedbackName,
-    text: feedbackText,
-    rating,
-    createdAt: new Date().toISOString()
-  }
-]);
+      //  Add new feedback instantly in the list
+      setFeedbacks((prev) => [
+        ...prev,
+        {
+          _id: response.data._id,
+          customerName: feedbackName,
+          text: feedbackText,
+          rating,
+          createdAt: new Date().toISOString(),
+        },
+      ]);
 
-// ✅ Clear input fields
-setFeedbackText('');
-setFeedbackName('');
-setRating(0);
+      // Clear input fields
+      setFeedbackText("");
+      setFeedbackName("");
+      setRating(0);
 
-alert('Feedback submitted successfully!');
-
+      alert("Feedback submitted successfully!");
     } catch (error) {
-      console.error('Error submitting feedback:', error);
-      alert('Failed to submit feedback. Please try again.');
+      console.error("Error submitting feedback:", error);
+      alert("Failed to submit feedback. Please try again.");
     } finally {
       setSubmittingFeedback(false);
     }
@@ -210,7 +211,9 @@ alert('Feedback submitted successfully!');
                               setCurrentImageIndex(index);
                             }}
                             className={`w-2 h-2 rounded-full ${
-                              index === currentImageIndex ? 'bg-white' : 'bg-gray-400'
+                              index === currentImageIndex
+                                ? "bg-white"
+                                : "bg-gray-400"
                             }`}
                           />
                         ))}
@@ -235,9 +238,15 @@ alert('Feedback submitted successfully!');
               {/* Product Details Section */}
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-3xl font-bold text-textPrimary mb-2">{product.name}</h2>
-                  <p className="text-3xl font-bold text-primary mb-4">Rs.{product.price}</p>
-                  <p className="text-textSecondary leading-relaxed">{product.description}</p>
+                  <h2 className="text-3xl font-bold text-textPrimary mb-2">
+                    {product.name}
+                  </h2>
+                  <p className="text-3xl font-bold text-primary mb-4">
+                    Rs.{product.price}
+                  </p>
+                  <p className="text-textSecondary leading-relaxed">
+                    {product.description}
+                  </p>
                 </div>
 
                 <div className="flex items-center space-x-4">
@@ -246,12 +255,16 @@ alert('Feedback submitted successfully!');
                     disabled={alreadyLiked}
                     className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${
                       alreadyLiked
-                        ? 'bg-red-100 text-red-600 cursor-not-allowed'
-                        : 'bg-red-50 text-red-600 hover:bg-red-100'
+                        ? "bg-red-100 text-red-600 cursor-not-allowed"
+                        : "bg-red-50 text-red-600 hover:bg-red-100"
                     }`}
-                    title={alreadyLiked ? 'You already liked this product' : 'Like this product'}
+                    title={
+                      alreadyLiked
+                        ? "You already liked this product"
+                        : "Like this product"
+                    }
                   >
-                    <FaHeart className={alreadyLiked ? 'text-red-500' : ''} />
+                    <FaHeart className={alreadyLiked ? "text-red-500" : ""} />
                     <span>{likes} Likes</span>
                   </button>
                   <button
@@ -268,7 +281,7 @@ alert('Feedback submitted successfully!');
             {/* Feedback Section */}
             <div className="border-t border-slate-700 p-6 mt-6">
               <h3 className="text-2xl font-bold mb-4">Customer Feedback</h3>
-              
+
               {/* Feedback Form */}
               <form onSubmit={handleFeedbackSubmit} className="mb-6 space-y-4">
                 <div>
@@ -281,8 +294,10 @@ alert('Feedback submitted successfully!');
                   />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-textSecondary">Your Rating:</span>
-                  {[1,2,3,4,5].map((star) => (
+                  <span className="text-sm text-textSecondary">
+                    Your Rating:
+                  </span>
+                  {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
                       type="button"
@@ -290,7 +305,11 @@ alert('Feedback submitted successfully!');
                       className="focus:outline-none"
                       aria-label={`Rate ${star} star`}
                     >
-                      <FaStar className={star <= rating ? 'text-yellow-400' : 'text-gray-300'} />
+                      <FaStar
+                        className={
+                          star <= rating ? "text-yellow-400" : "text-gray-300"
+                        }
+                      />
                     </button>
                   ))}
                 </div>
@@ -308,26 +327,40 @@ alert('Feedback submitted successfully!');
                   disabled={submittingFeedback}
                   className="px-6 py-2 text-white rounded-xl shadow-md hover:shadow-lg bg-button hover:bg-buttonHover transition disabled:opacity-50"
                 >
-                  {submittingFeedback ? 'Submitting...' : 'Submit Feedback'}
+                  {submittingFeedback ? "Submitting..." : "Submit Feedback"}
                 </button>
               </form>
 
               {/* Feedbacks List */}
               <div className="space-y-4">
                 {feedbacks.length === 0 ? (
-                  <p className="text-slate-300">No feedback yet. Be the first to review!</p>
+                  <p className="text-slate-300">
+                    No feedback yet. Be the first to review!
+                  </p>
                 ) : (
                   feedbacks.map((feedback) => (
-                    <div key={feedback._id} className="bg-card p-4 rounded-xl shadow-md">
+                    <div
+                      key={feedback._id}
+                      className="bg-card p-4 rounded-xl shadow-md"
+                    >
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-semibold text-textPrimary">{feedback.customerName}</h4>
+                        <h4 className="font-semibold text-textPrimary">
+                          {feedback.customerName}
+                        </h4>
                         <span className="text-sm text-textSecondary">
                           {new Date(feedback.createdAt).toLocaleDateString()}
                         </span>
                       </div>
                       <div className="flex items-center mb-2">
-                        {[1,2,3,4,5].map((s) => (
-                          <FaStar key={s} className={s <= (feedback.rating || 0) ? 'text-yellow-400' : 'text-gray-300'} />
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <FaStar
+                            key={s}
+                            className={
+                              s <= (feedback.rating || 0)
+                                ? "text-yellow-400"
+                                : "text-gray-300"
+                            }
+                          />
                         ))}
                       </div>
                       <p className="text-textSecondary">{feedback.text}</p>
@@ -344,4 +377,3 @@ alert('Feedback submitted successfully!');
 };
 
 export default ProductModal;
-

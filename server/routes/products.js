@@ -7,16 +7,13 @@
 // const multer = require('multer');
 // const cloudinary = require('../config/cloudinary');
 
-
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Product = require('../models/Product');
-const authMiddleware = require('../middleware/auth');
+const Product = require("../models/Product");
+const authMiddleware = require("../middleware/auth");
 
-const upload = require('../middleware/multer');
-const { uploadBufferToCloudinary } = require('../config/cloudinary');
-
-
+const upload = require("../middleware/multer");
+const { uploadBufferToCloudinary } = require("../config/cloudinary");
 
 // Configure multer for memory storage
 // const storage = multer.memoryStorage();
@@ -32,16 +29,16 @@ const { uploadBufferToCloudinary } = require('../config/cloudinary');
 //   }
 // });
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const products = await Product.find().sort({ createdAt: -1 });
     res.json(products);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching products', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching products", error: error.message });
   }
 });
-
-
 
 // Get single product
 // router.get('/:id', async (req, res) => {
@@ -56,26 +53,24 @@ router.get('/', async (req, res) => {
 //   }
 // });
 
-
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    if (!product) return res.status(404).json({ message: 'Product not found' });
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
     res.json(product);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching product', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching product", error: error.message });
   }
 });
-
-
-
 
 // Like a product
 // router.post('/:id/like', async (req, res) => {
 //   try {
 //     const { userId } = req.body;
-    
+
 //     if (!userId) {
 //       return res.status(400).json({ message: 'User ID is required' });
 //     }
@@ -87,7 +82,7 @@ router.get('/:id', async (req, res) => {
 
 //     // Check if user already liked this product
 //     if (product.likedBy && product.likedBy.includes(userId)) {
-//       return res.status(400).json({ 
+//       return res.status(400).json({
 //         message: 'You have already liked this product',
 //         likes: product.likes,
 //         alreadyLiked: true
@@ -102,7 +97,7 @@ router.get('/:id', async (req, res) => {
 //     product.likedBy.push(userId);
 //     await product.save();
 
-//     res.json({ 
+//     res.json({
 //       likes: product.likes,
 //       alreadyLiked: false
 //     });
@@ -110,8 +105,6 @@ router.get('/:id', async (req, res) => {
 //     res.status(500).json({ message: 'Error liking product', error: error.message });
 //   }
 // });
-
-
 
 // router.post(
 //   '/',
@@ -154,9 +147,6 @@ router.get('/:id', async (req, res) => {
 //   }
 // );
 
-
-
-
 // Helper function to upload file to Cloudinary
 // const uploadToCloudinary = (file) => {
 //   return new Promise((resolve, reject) => {
@@ -170,13 +160,13 @@ router.get('/:id', async (req, res) => {
 //       }
 //     );
 //     uploadStream.end(file.buffer);
-//   });                                                                                  
+//   });
 // };
 
 // Add new product (Admin only)
 // router.post
-// '/', 
-// authMiddleware, 
+// '/',
+// authMiddleware,
 // upload.fields([
 //   { name: 'images', maxCount: 10 },
 //   { name: 'video', maxCount: 1 }
@@ -207,7 +197,6 @@ router.get('/:id', async (req, res) => {
 //       }
 //     }
 
-
 //     // Upload video if provided
 //     let videoUrl = null;
 //     if (req.files?.video && req.files.video.length > 0) {
@@ -230,28 +219,30 @@ router.get('/:id', async (req, res) => {
 //   }
 // });
 
-
 // 📌 CREATE PRODUCT (Admin Only)
 router.post(
-  '/',
+  "/",
   authMiddleware,
   upload.fields([
-    { name: 'images', maxCount: 10 },
-    { name: 'video', maxCount: 1 },
+    { name: "images", maxCount: 10 },
+    { name: "video", maxCount: 1 },
   ]),
   async (req, res) => {
     try {
       const { name, description, shortDescription, price } = req.body;
 
       if (!name || !description || !shortDescription || !price) {
-        return res.status(400).json({ message: 'All fields are required' });
+        return res.status(400).json({ message: "All fields are required" });
       }
 
       // Upload images
       const images = [];
       if (req.files?.images) {
         for (const file of req.files.images) {
-          const url = await uploadBufferToCloudinary(file.buffer, "iffu_products");
+          const url = await uploadBufferToCloudinary(
+            file.buffer,
+            "iffu_products"
+          );
           images.push(url);
         }
       }
@@ -259,7 +250,10 @@ router.post(
       // Upload video
       let videoUrl = null;
       if (req.files?.video) {
-        videoUrl = await uploadBufferToCloudinary(req.files.video[0].buffer, "iffu_videos");
+        videoUrl = await uploadBufferToCloudinary(
+          req.files.video[0].buffer,
+          "iffu_videos"
+        );
       }
 
       const product = new Product({
@@ -272,11 +266,12 @@ router.post(
       });
 
       await product.save();
-      res.json({ message: 'Product created successfully', product });
-
+      res.json({ message: "Product created successfully", product });
     } catch (error) {
-      console.error('UPLOAD ERROR:', error);
-      res.status(500).json({ message: 'Error creating product', error: error.message });
+      console.error("UPLOAD ERROR:", error);
+      res
+        .status(500)
+        .json({ message: "Error creating product", error: error.message });
     }
   }
 );
@@ -323,74 +318,67 @@ router.post(
 //   }
 // });
 
+router.put(
+  "/:id",
+  authMiddleware,
+  upload.fields([
+    { name: "images", maxCount: 10 },
+    { name: "video", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    try {
+      const product = await Product.findById(req.params.id);
+      if (!product)
+        return res.status(404).json({ message: "Product not found" });
 
+      const { name, description, shortDescription, price } = req.body;
 
-router.put('/:id', authMiddleware, upload.fields([
-  { name: 'images', maxCount: 10 },
-  { name: 'video', maxCount: 1 }
-]), async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
-    if (!product) return res.status(404).json({ message: 'Product not found' });
+      if (name) product.name = name;
+      if (description) product.description = description;
+      if (shortDescription) product.shortDescription = shortDescription;
+      if (price) product.price = parseFloat(price);
 
-    const { name, description, shortDescription, price } = req.body;
-
-    if (name) product.name = name;
-    if (description) product.description = description;
-    if (shortDescription) product.shortDescription = shortDescription;
-    if (price) product.price = parseFloat(price);
-
-    // Handle new image uploads
-    if (req.files?.images) {
-      for (const file of req.files.images) {
-        const url = await uploadBufferToCloudinary(file.buffer, "iffu_products");
-        product.images.push(url);
+      // Handle new image uploads
+      if (req.files?.images) {
+        for (const file of req.files.images) {
+          const url = await uploadBufferToCloudinary(
+            file.buffer,
+            "iffu_products"
+          );
+          product.images.push(url);
+        }
       }
+
+      // Handle new video upload
+      if (req.files?.video) {
+        product.video = await uploadBufferToCloudinary(
+          req.files.video[0].buffer,
+          "iffu_videos"
+        );
+      }
+
+      await product.save();
+      res.json({ message: "Product updated successfully", product });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error updating product", error: error.message });
     }
-
-    // Handle new video upload
-    if (req.files?.video) {
-      product.video = await uploadBufferToCloudinary(req.files.video[0].buffer, "iffu_videos");
-    }
-
-    await product.save();
-    res.json({ message: 'Product updated successfully', product });
-
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating product', error: error.message });
   }
-});
+);
 
-
-
-// Delete product (Admin only)
-// router.delete('/:id', authMiddleware, async (req, res) => {
-//   try {
-//     const product = await Product.findByIdAndDelete(req.params.id);
-//     if (!product) {
-//       return res.status(404).json({ message: 'Product not found' });
-//     }
-//     res.json({ message: 'Product deleted successfully' });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error deleting product', error: error.message });
-//   }
-// });
-
-
-// 📌 DELETE PRODUCT
-router.delete('/:id', authMiddleware, async (req, res) => {
+//  DELETE PRODUCT
+router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
-    if (!product) return res.status(404).json({ message: 'Product not found' });
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
-    res.json({ message: 'Product deleted successfully' });
+    res.json({ message: "Product deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting product', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error deleting product", error: error.message });
   }
 });
 
-
-
-
 module.exports = router;
-

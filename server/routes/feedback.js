@@ -42,14 +42,6 @@ router.post('/', async (req, res) => {
     });
 
     await feedback.save();
-
-    // Recalculate and update product's average rating
-    // const feedbacks = await Feedback.find({ productId });
-    // const totalRating = feedbacks.reduce((acc, item) => acc + item.rating, 0);
-    // product.averageRating = totalRating / feedbacks.length;
-    // await product.save();
-
-    // res.status(201).json(feedback);
   } 
   catch (error) {
     res.status(500).json({ message: 'Error creating feedback', error: error.message });

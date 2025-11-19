@@ -33,7 +33,10 @@ import axios from 'axios';
 
 // Correct API Base URL
 
-const API_BASE_URL = ((process.env.REACT_APP_API_URL || 'https://iffu-creation-server.onrender.com') + '/api');
+// const API_BASE_URL = ((process.env.REACT_APP_API_URL || 'https://iffu-creation-server.onrender.com') + '/api');
+let base = process.env.REACT_APP_API_URL || "https://iffu-creation-server.onrender.com";
+if (base.endsWith("/")) base = base.slice(0, -1);
+const API_BASE_URL = base + "/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,

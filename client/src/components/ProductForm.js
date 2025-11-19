@@ -54,61 +54,118 @@ const ProductForm = ({ product, onClose, onSuccess, getAuthHeaders }) => {
     setImages(images.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setError('');
 
-    if (!formData.name || !formData.description || !formData.shortDescription || !formData.price) {
-      setError('Please fill in all fields');
-      return;
-    }
+//     if (!formData.name || !formData.description || !formData.shortDescription || !formData.price) {
+//       setError('Please fill in all fields');
+//       return;
+//     }
 
-    if (!product && images.length === 0) {
-      setError('Please upload at least one image');
-      return;
-    }
+//     if (!product && images.length === 0) {
+//       setError('Please upload at least one image');
+//       return;
+//     }
 
-    if (product && images.length === 0 && existingImages.length === 0) {
-      setError('Product must have at least one image');
-      return;
-    }
+//     if (product && images.length === 0 && existingImages.length === 0) {
+//       setError('Product must have at least one image');
+//       return;
+//     }
 
-    try {
-      setLoading(true);
-      const headers = getAuthHeaders();
-      const formDataToSend = new FormData();
+//     try {
+//       setLoading(true);
+//       const headers = getAuthHeaders();
+//       const formDataToSend = new FormData();
       
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('description', formData.description);
-      formDataToSend.append('shortDescription', formData.shortDescription);
-      formDataToSend.append('price', formData.price);
+//       formDataToSend.append('name', formData.name);
+//       formDataToSend.append('description', formData.description);
+//       formDataToSend.append('shortDescription', formData.shortDescription);
+//       formDataToSend.append('price', formData.price);
 
-      images.forEach((image) => {
-        formDataToSend.append('images', image);
-      });
+//       images.forEach((image) => {
+//         formDataToSend.append('images', image);
+//       });
 
-      if (video) {
-        formDataToSend.append('video', video);
-      }
+//       if (video) {
+//         formDataToSend.append('video', video);
+//       }
 
-      // Note: Don't set Content-Type for FormData - axios sets it automatically with boundary
+//       // Note: Don't set Content-Type for FormData - axios sets it automatically with boundary
 
-      if (product) {
-        await updateProduct(product._id, formDataToSend, headers);
-        alert('Product updated successfully!');
-      } else {
-        await createProduct(formDataToSend, headers);
-        alert('Product created successfully!');
-      }
+//       if (product) {
+//         await updateProduct(product._id, formDataToSend, {headers});
+//         alert('Product updated successfully!');
+//       } else {
+//         await createProduct(formDataToSend, {headers});
+//         alert('Product created successfully!');
+//       }
 
-      onSuccess();
-    } catch (error) {
-      console.error('Error saving product:', error);
-      setError(error.response?.data?.message || 'Failed to save product');
-    } finally {
-      setLoading(false);
+//       onSuccess();
+//     } catch (error) {
+//       console.error('Error saving product:', error);
+//       setError(error.response?.data?.message || 'Failed to save product');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
+
+  if (!formData.name || !formData.description || !formData.shortDescription || !formData.price) {
+    setError('Please fill in all fields');
+    return;
+  }
+
+  if (!product && images.length === 0) {
+    setError('Please upload at least one image');
+    return;
+  }
+
+  if (product && images.length === 0 && existingImages.length === 0) {
+    setError('Product must have at least one image');
+    return;
+  }
+
+  try {
+    setLoading(true);
+    const headers = getAuthHeaders();
+    const formDataToSend = new FormData();
+    
+    formDataToSend.append('name', formData.name);
+    formDataToSend.append('description', formData.description);
+    formDataToSend.append('shortDescription', formData.shortDescription);
+    formDataToSend.append('price', formData.price);
+
+    images.forEach((image) => {
+      formDataToSend.append('images', image);
+    });
+
+    if (video) {
+      formDataToSend.append('video', video);
     }
-  };
+
+    // ⬇️ FIXED HERE (Wrapped headers correctly)
+    if (product) {
+      await updateProduct(product._id, formDataToSend, { headers });
+      alert('Product updated successfully!');
+    } else {
+      await createProduct(formDataToSend, { headers });
+      alert('Product created successfully!');
+    }
+
+    onSuccess();
+  } catch (error) {
+    console.error('Error saving product:', error);
+    setError(error.response?.data?.message || 'Failed to save product');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto">

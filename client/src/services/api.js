@@ -40,16 +40,44 @@ const api = axios.create({
 });
 
 // Products API
+// export const getProducts = () => api.get('/products');
+// export const getProduct = (id) => api.get(`/products/${id}`);
+// export const likeProduct = (id, userId) =>
+//   api.post(`/products/${id}/like`, { userId });
+// export const createProduct = (formData, config) =>
+//   api.post('/products', formData, config);
+// export const updateProduct = (id, formData, config) =>
+//   api.put(`/products/${id}`, formData, config);
+// export const deleteProduct = (id, config) =>
+//   api.delete(`/products/${id}`, config);
+
+// Products API
 export const getProducts = () => api.get('/products');
 export const getProduct = (id) => api.get(`/products/${id}`);
 export const likeProduct = (id, userId) =>
   api.post(`/products/${id}/like`, { userId });
+
 export const createProduct = (formData, config) =>
-  api.post('/products', formData, config);
+  api.post('/products', formData, {
+    ...config,
+    headers: {
+      ...config.headers,
+      "Content-Type": "multipart/form-data"
+    }
+  });
+
 export const updateProduct = (id, formData, config) =>
-  api.put(`/products/${id}`, formData, config);
+  api.put(`/products/${id}`, formData, {
+    ...config,
+    headers: {
+      ...config.headers,
+      "Content-Type": "multipart/form-data"
+    }
+  });
+
 export const deleteProduct = (id, config) =>
   api.delete(`/products/${id}`, config);
+
 
 // Orders API
 export const createOrder = (orderData) => api.post('/orders', orderData);

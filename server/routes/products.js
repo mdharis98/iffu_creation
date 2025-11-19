@@ -108,9 +108,17 @@ router.post('/', authMiddleware, upload.fields([
       images.push(url);
     }
 
-    if (images.length === 0) {
-      return res.status(400).json({ message: 'At least one image is required' });
+    // if (images.length === 0) {
+    //   return res.status(400).json({ message: 'At least one image is required' });
+    // }
+
+    if (req.files?.images) {
+      for (const file of req.files.images) {
+        const url = await uploadToCloudinary(file);
+        images.push(url);
+      }
     }
+
 
     // Upload video if provided
     let videoUrl = null;

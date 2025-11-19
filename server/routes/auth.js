@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 // Hardcoded admin credentials (from env)
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'Ifa@iffu_Art';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Iffu@Artist2024';
 
 // Admin login
 router.post('/login', async (req, res) => {

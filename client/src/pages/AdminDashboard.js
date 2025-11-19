@@ -199,7 +199,7 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        {activeTab === 'orders' && (
+        {/* {activeTab === 'orders' && (
           <div>
             <h2 className="text-2xl font-bold text-gray-800 mb-6">All Orders</h2>
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -263,7 +263,108 @@ const AdminDashboard = () => {
               )}
             </div>
           </div>
+        )} */}
+
+
+        {activeTab === 'orders' && (
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">All Orders</h2>
+
+            {/* Desktop Table */}
+            <div className="hidden md:block bg-white rounded-lg shadow-md overflow-x-auto">
+              <table className="min-w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Address</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {orders.map((order) => (
+                    <tr key={order._id}>
+                      <td className="px-6 py-4 text-sm">{order._id.slice(-8)}</td>
+                      <td className="px-6 py-4 text-sm font-medium">{order.customerName}</td>
+                      <td className="px-6 py-4 text-sm">{order.productId?.name || 'N/A'}</td>
+                      <td className="px-6 py-4 text-sm">{order.phoneNumber}</td>
+                      <td className="px-6 py-4 text-sm">{order.address}, {order.location}</td>
+                      <td className="px-6 py-4 text-sm">{new Date(order.createdAt).toLocaleDateString()}</td>
+                      <td className="px-6 py-4 text-sm">
+                        <span className={`px-2 py-1 rounded-full text-xs ${
+                          order.status === 'delivered' ? 'bg-green-100 text-green-700'
+                          : 'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {order.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        {order.status !== 'delivered' ? (
+                          <button
+                            onClick={() => markOrderDelivered(order._id)}
+                            className="px-3 py-1 bg-[#60A5FA] text-white rounded-lg hover:bg-blue-600"
+                          >
+                            Mark as Done
+                          </button>
+                        ) : (
+                          <span className="text-green-600 font-medium">Done</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {orders.length === 0 && (
+                <div className="text-center py-8 text-gray-500">No orders yet</div>
+              )}
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-4">
+              {orders.map((order) => (
+                <div key={order._id} className="bg-white p-4 rounded-lg shadow-md">
+                  <div className="flex justify-between">
+                    <span className="text-sm font-semibold text-gray-600">#{order._id.slice(-8)}</span>
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      order.status === 'delivered' ? 'bg-green-100 text-green-700'
+                      : 'bg-yellow-100 text-yellow-700'
+                    }`}>
+                      {order.status}
+                    </span>
+                  </div>
+
+                  <p className="mt-1 font-bold text-gray-800">{order.customerName}</p>
+                  <p className="text-gray-600 text-sm">{order.productId?.name || 'N/A'}</p>
+
+                  <div className="mt-2 text-sm">
+                    <p><strong>Phone:</strong> {order.phoneNumber}</p>
+                    <p><strong>Address:</strong> {order.address}, {order.location}</p>
+                    <p><strong>Date:</strong> {new Date(order.createdAt).toLocaleDateString()}</p>
+                  </div>
+
+                  {order.status !== 'delivered' ? (
+                    <button
+                      onClick={() => markOrderDelivered(order._id)}
+                      className="w-full mt-3 py-2 bg-[#60A5FA] text-white rounded-lg hover:bg-blue-700"
+                    >
+                      Mark as Done
+                    </button>
+                  ) : (
+                    <p className="text-green-600 font-medium mt-3 text-center">Completed</p>
+                  )}
+                </div>
+              ))}
+              {orders.length === 0 && (
+                <div className="text-center py-8 text-gray-500">No orders yet</div>
+              )}
+            </div>
+          </div>
         )}
+
 
         {activeTab === 'feedbacks' && (
           <div>

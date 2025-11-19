@@ -1,11 +1,20 @@
+// const express = require('express');
+// const router = express.Router();
+// const Product = require('../models/Product');
+// const authMiddleware = require('../middleware/auth');
+// const upload = require('../middleware/multer');
+// const { uploadBufferToCloudinary } = require('../config/cloudinary');
+// const multer = require('multer');
+// const cloudinary = require('../config/cloudinary');
+
+
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
 const authMiddleware = require('../middleware/auth');
+
 const upload = require('../middleware/multer');
 const { uploadBufferToCloudinary } = require('../config/cloudinary');
-const multer = require('multer');
-const cloudinary = require('../config/cloudinary');
 
 
 

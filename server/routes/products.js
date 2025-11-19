@@ -19,8 +19,8 @@ const { uploadBufferToCloudinary } = require('../config/cloudinary');
 
 
 // Configure multer for memory storage
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage });
 
 // Get all products
 // router.get('/', async (req, res) => {

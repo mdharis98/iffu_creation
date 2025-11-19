@@ -116,13 +116,18 @@ export const AuthProvider = ({ children }) => {
     return !!token;
   };
 
-  const getAuthHeaders = () => {
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    };
-  };
+  // const getAuthHeaders = () => {
+  //   return {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`
+  //     }
+  //   };
+  // };
+
+  const getAuthHeaders = () => ({
+    Authorization: `Bearer ${token}`
+  });
+
 
   return (
     <AuthContext.Provider

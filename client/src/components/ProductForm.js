@@ -111,6 +111,44 @@ const ProductForm = ({ product, onClose, onSuccess, getAuthHeaders }) => {
 //   };
 
 
+// const handleSubmit = async (e) => {
+//   e.preventDefault();
+//   setError('');
+
+//   if (!formData.name || !formData.description || !formData.shortDescription || !formData.price) {
+//     setError('Please fill in all fields');
+//     return;
+//   }
+
+//   if (!product && images.length === 0) {
+//     setError('Please upload at least one image');
+//     return;
+//   }
+
+//   if (product && images.length === 0 && existingImages.length === 0) {
+//     setError('Product must have at least one image');
+//     return;
+//   }
+
+//   try {
+//     setLoading(true);
+//     const headers = getAuthHeaders();
+//     const formDataToSend = new FormData();
+    
+//     formDataToSend.append('name', formData.name);
+//     formDataToSend.append('description', formData.description);
+//     formDataToSend.append('shortDescription', formData.shortDescription);
+//     formDataToSend.append('price', formData.price);
+
+//     images.forEach((image) => {
+//       formDataToSend.append('images', image);
+//     });
+
+//     if (video) {
+//       formDataToSend.append('video', video);
+//     }
+
+
 const handleSubmit = async (e) => {
   e.preventDefault();
   setError('');
@@ -132,7 +170,7 @@ const handleSubmit = async (e) => {
 
   try {
     setLoading(true);
-    const headers = getAuthHeaders();
+
     const formDataToSend = new FormData();
     
     formDataToSend.append('name', formData.name);
@@ -148,12 +186,12 @@ const handleSubmit = async (e) => {
       formDataToSend.append('video', video);
     }
 
-    // ⬇️ FIXED HERE (Wrapped headers correctly)
+    // 🔐 FIXED HERE
     if (product) {
-      await updateProduct(product._id, formDataToSend, { headers });
+      await updateProduct(product._id, formDataToSend, { headers: getAuthHeaders() });
       alert('Product updated successfully!');
     } else {
-      await createProduct(formDataToSend, { headers });
+      await createProduct(formDataToSend, { headers: getAuthHeaders() });
       alert('Product created successfully!');
     }
 
@@ -165,6 +203,34 @@ const handleSubmit = async (e) => {
     setLoading(false);
   }
 };
+
+
+    // ⬇️ FIXED HERE (Wrapped headers correctly)
+    // if (product) {
+    //   await updateProduct(product._id, formDataToSend, { headers });
+    //   alert('Product updated successfully!');
+    // } else {
+    //   await createProduct(formDataToSend, { headers });
+    //   alert('Product created successfully!');
+    // }
+
+//     if (product) {
+//       await updateProduct(product._id, formDataToSend, { headers: getAuthHeaders() });
+//       alert('Product updated successfully!');
+//     } else {
+//       await createProduct(formDataToSend, { headers: getAuthHeaders() });
+//       alert('Product created successfully!');
+//     }
+
+
+//     onSuccess();
+//   } catch (error) {
+//     console.error('Error saving product:', error);
+//     setError(error.response?.data?.message || 'Failed to save product');
+//   } finally {
+//     setLoading(false);
+//   }
+// };
 
 
   return (
